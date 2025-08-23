@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Lynx</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .nav {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .nav a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .link-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+        .link-source {
+            font-weight: 600;
+            color: #333;
+        }
+        .link-target {
+            color: #666;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+        .link-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+        .link-actions {
+            margin-top: 10px;
+        }
+        .link-actions a {
+            margin-right: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/add">Add Link</a>
+            <a href="/search">Search</a>
+        </nav>
+        
+        <h1>Lynx - Link Shortener</h1>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/add" class="btn">Add New Link</a>
+        </div>
+
+        <h2>Recent Links</h2>
+
+        {% if links.is_empty() %}
+            <p>No links found. <a href="/add">Add your first link</a>.</p>
+        {% else %}
+            {% for link in links %}
+                <div class="link-item">
+                    <div class="link-source">{{ link.host }}/{{ link.source }}</div>
+                    <div class="link-target">→ {{ link.target }}</div>
+                    <div class="link-meta">
+                        Created: {{ link.created_at.format("%Y-%m-%d %H:%M:%S") }}
+                    </div>
+                    <div class="link-actions">
+                        <a href="/edit/{{ link.id }}" class="btn" style="font-size: 12px; padding: 5px 10px;">Edit</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>
