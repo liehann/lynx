@@ -6,23 +6,21 @@ use serde_json::json;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tower::ServiceExt;
+use tower::util::ServiceExt;
 
 use lynx::*;
 
 async fn create_test_app() -> axum::Router {
-    // Create test configuration
-    let config = config::Config {
-        admin_host: "lynx".to_string(),
-        default_redirect_host: "go".to_string(),
-        database_url: "postgresql://test:test@localhost/test_lynx".to_string(),
-    };
+    // Load test environment
+    dotenvy::from_filename(".env.test").ok();
+    
+    // Create test configuration from environment
+    let config = config::Config::from_env().expect("Failed to load test config");
 
     // Create in-memory cache
     let cache = Arc::new(RwLock::new(HashMap::new()));
 
-    // For testing, we'll mock the database
-    // In a real test, you'd use a test database
+    // Connect to test database
     let db = database::Database::new(&config.database_url).await.expect("Failed to connect to test database");
 
     let state = AppState {
@@ -77,8 +75,10 @@ async fn test_redirector_no_match() {
     assert_eq!(response.status(), StatusCode::TEMPORARY_REDIRECT);
     
     let location = response.headers().get("location").unwrap();
-    assert!(location.to_str().unwrap().contains("lynx"));
-    assert!(location.to_str().unwrap().contains("/add"));
+    let location_str = location.to_str().unwrap();
+    // Should redirect to admin add page with source prefilled
+    assert!(location_str.contains("/add"));
+    assert!(location_str.contains("source=%2Fnonexistent")); // URL encoded /nonexistent
 }
 
 #[tokio::test]

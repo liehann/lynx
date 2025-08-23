@@ -57,13 +57,19 @@ cp env.example .env
 
 2. Update the `.env` file with your database URL:
 ```
-DATABASE_URL=postgresql://username:password@localhost/lynx_prod
+DATABASE_URL=postgresql://username:password@goblin/lynx_prod
 ADMIN_HOST=lynx
 DEFAULT_REDIRECT_HOST=go
 ```
 
 ### Running
 
+**Option 1: Use the startup script**
+```bash
+./start-server.sh
+```
+
+**Option 2: Manual startup**
 ```bash
 cargo run
 ```
@@ -132,8 +138,25 @@ If no exact match is found, the system progressively strips path segments:
 
 ### Running Tests
 
+**Option 1: Use the test script**
 ```bash
-cargo test
+./run-tests.sh
+```
+
+**Option 2: Manual testing**
+```bash
+# Unit tests only (no database required)
+cargo test --lib
+
+# Integration tests (requires test database)
+cargo test --test integration_tests
+```
+
+**Test Configuration:**
+For integration tests, create a `.env.test` file:
+```bash
+cp env.example .env.test
+# Edit .env.test with test database credentials
 ```
 
 ### Database Migrations
