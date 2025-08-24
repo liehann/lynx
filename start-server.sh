@@ -29,8 +29,15 @@ if [ $? -eq 0 ]; then
     echo "✓ Build successful"
     echo ""
     echo "Starting server..."
-    echo "Admin UI will be available at: http://lynx:3000"
-    echo "Redirector will handle requests to: http://go:3000"
+    
+    # Load environment variables to show correct URLs
+    source .env 2>/dev/null || true
+    PORT=${PORT:-3000}
+    ADMIN_HOST=${ADMIN_HOST:-lynx}
+    DEFAULT_REDIRECT_HOST=${DEFAULT_REDIRECT_HOST:-go}
+    
+    echo "Admin UI will be available at: http://${ADMIN_HOST}:${PORT}"
+    echo "Redirector will handle requests to: http://${DEFAULT_REDIRECT_HOST}:${PORT}"
     echo ""
     echo "Press Ctrl+C to stop the server"
     echo ""

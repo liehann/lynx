@@ -161,7 +161,14 @@ cp env.example .env.test
 
 ### Database Migrations
 
-The application automatically runs migrations on startup using sqlx.
+Migrations are handled manually for production safety. The migration files are in the `migrations/` directory.
+
+**To run migrations manually:**
+```sql
+-- Connect to your database and run the migration SQL
+\c lynx_prod
+\i migrations/001_create_links_table.sql
+```
 
 ### Project Structure
 
