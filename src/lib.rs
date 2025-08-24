@@ -15,7 +15,7 @@ use axum::{
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tower_http::trace::TraceLayer;
+use tower_http::{trace::TraceLayer, services::ServeDir};
 
 use config::Config;
 use models::Link;
@@ -53,6 +53,7 @@ pub fn create_app(state: AppState) -> Router {
     Router::new()
         .merge(api_routes)
         .merge(ui_routes)
+        .nest_service("/static", ServeDir::new("static"))
         .fallback(main_handler)
         .layer(TraceLayer::new_for_http())
         .with_state(state)

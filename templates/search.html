@@ -4,142 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search - Lynx</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .nav {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-        .nav a {
-            color: #007bff;
-            text-decoration: none;
-            margin-right: 20px;
-            font-weight: 500;
-        }
-        .nav a:hover {
-            text-decoration: underline;
-        }
-        .btn {
-            background: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-        }
-        .btn:hover {
-            background: #0056b3;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        input[type="text"] {
-            width: calc(100% - 100px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            display: inline-block;
-        }
-        .link-item {
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            background: #fafafa;
-        }
-        .link-source {
-            font-weight: 600;
-            color: #333;
-        }
-        .link-target {
-            color: #666;
-            margin: 5px 0;
-            word-break: break-all;
-        }
-        .link-meta {
-            font-size: 12px;
-            color: #999;
-            margin-top: 10px;
-        }
-        .link-actions {
-            margin-top: 10px;
-        }
-        .link-actions a {
-            margin-right: 10px;
-            font-size: 12px;
-        }
-    </style>
+    <link rel="icon" type="image/png" href="/static/lynxfavicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <nav class="nav">
-            <a href="/">Home</a>
-            <a href="/add">Add Link</a>
-            <a href="/search">Search</a>
-        </nav>
-        
-        <h1>Search Links</h1>
-
-        <form method="get" style="margin-bottom: 30px;">
-            <div class="form-group">
-                <label for="q">Search:</label>
-                <input type="text" id="q" name="q" value="{{ query }}" placeholder="Search sources, targets, or hosts...">
-                <button type="submit" class="btn" style="margin-left: 10px;">Search</button>
+        <header class="header">
+            <div class="logo-section">
+                <img src="/static/lynxlogo.png" alt="Lynx" class="logo">
+                <h1 class="logo-text">Lynx</h1>
             </div>
-        </form>
+            <nav class="nav">
+                <a href="/">Dashboard</a>
+                <a href="/add">Add Link</a>
+                <a href="/search" class="active">Search</a>
+            </nav>
+        </header>
 
-        {% if !query.is_empty() %}
-            <h2>Search Results for "{{ query }}"</h2>
-            
-            {% if links.is_empty() %}
-                <p>No links found matching your search.</p>
-            {% else %}
-                {% for link in links %}
-                    <div class="link-item">
-                        <div class="link-source">{{ link.host }}/{{ link.source }}</div>
-                        <div class="link-target">→ {{ link.target }}</div>
-                        <div class="link-meta">
-                            Created: {{ link.created_at.format("%Y-%m-%d %H:%M:%S") }}
-                        </div>
-                        <div class="link-actions">
-                            <a href="/edit/{{ link.id }}" class="btn" style="font-size: 12px; padding: 5px 10px;">Edit</a>
-                        </div>
+        <div class="main-content">
+            <h2 class="page-title">Search Links</h2>
+            <p class="page-subtitle">Find links by source, target, or host</p>
+
+            <form method="get" class="search-form">
+                <div class="search-input-group">
+                    <div class="form-group">
+                        <label for="q" class="form-label">Search Query</label>
+                        <input type="text" id="q" name="q" value="{{ query }}" class="form-input" placeholder="Search sources, targets, or hosts...">
                     </div>
-                {% endfor %}
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            {% if !query.is_empty() %}
+                <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light);">
+                    <h3 style="font-size: 1.125rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem;">
+                        Search Results for "{{ query }}"
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                        {% if links.is_empty() %}
+                            No results found
+                        {% else %}
+                            Found {{ links.len() }} result{% if links.len() != 1 %}s{% endif %}
+                        {% endif %}
+                    </p>
+                </div>
                 
-                {% if page > 1 %}
-                    <div style="margin-top: 20px;">
-                        <a href="/search?q={{ query }}&page={{ page - 1 }}" class="btn">← Previous</a>
+                {% if links.is_empty() %}
+                    <div class="empty-state">
+                        <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        <h3>No results found</h3>
+                        <p>Try adjusting your search terms or <a href="/add" style="color: var(--primary-blue);">create a new link</a></p>
                     </div>
+                {% else %}
+                    <div class="links-grid">
+                        {% for link in links %}
+                            <div class="link-card">
+                                <div class="link-header">
+                                    <div>
+                                        <div class="link-host">{{ link.host }}</div>
+                                        <div class="link-source">{{ link.source }}</div>
+                                    </div>
+                                </div>
+                                <div class="link-target">
+                                    <a href="{{ link.target }}" target="_blank" rel="noopener">{{ link.target }}</a>
+                                </div>
+                                <div class="link-meta">
+                                    <span class="link-date">{{ link.created_at.format("%b %d, %Y at %H:%M") }}</span>
+                                    <div class="link-actions">
+                                        <a href="/edit/{{ link.id }}" class="btn btn-secondary btn-small">Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if page > 1 %}
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <a href="/search?q={{ query }}&page={{ page - 1 }}" class="btn btn-secondary">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="15,18 9,12 15,6"></polyline>
+                                </svg>
+                                Previous Page
+                            </a>
+                        </div>
+                    {% endif %}
                 {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <h3>Search your links</h3>
+                    <p>Enter a search term to find links by source path, target URL, or host domain</p>
+                </div>
             {% endif %}
-        {% endif %}
+        </div>
     </div>
 </body>
 </html>

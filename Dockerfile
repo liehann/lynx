@@ -18,6 +18,7 @@ COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 COPY templates ./templates
 COPY migrations ./migrations
+COPY static ./static
 
 # Build the application in release mode
 RUN cargo build --release
@@ -42,9 +43,10 @@ WORKDIR /app
 # Copy the binary from builder stage
 COPY --from=builder /app/target/release/lynx /app/lynx
 
-# Copy templates and migrations
+# Copy templates, migrations, and static files
 COPY --from=builder /app/templates /app/templates
 COPY --from=builder /app/migrations /app/migrations
+COPY --from=builder /app/static /app/static
 
 # Change ownership to app user
 RUN chown -R lynx:lynx /app
