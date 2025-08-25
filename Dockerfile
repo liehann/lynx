@@ -54,12 +54,12 @@ RUN chown -R lynx:lynx /app
 # Switch to app user
 USER lynx
 
-# Expose port (default 3000, but configurable via PORT env var)
-EXPOSE 3000
+# Expose port (default 3100, but configurable via PORT env var)
+EXPOSE 3100
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-3000}/api/links || exit 1
+    CMD curl -f http://localhost:${PORT:-3100}/api/links || exit 1
 
 # Run the application
 CMD ["./lynx"]
