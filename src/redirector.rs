@@ -20,8 +20,9 @@ pub async fn handle_redirect(host: String, path: String, state: AppState) -> Res
     }
     
     // No match found, redirect to admin add page with source prefilled
-    let admin_url = format!("http://{}:3000/add?source={}", 
-                           state.config.admin_host, 
+    let admin_url = format!("http://{}:{}/add?source={}", 
+                           state.config.admin_host,
+                           state.config.port,
                            urlencoding::encode(&path));
     
     Redirect::temporary(&admin_url).into_response()

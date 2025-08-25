@@ -18,7 +18,7 @@ impl Config {
             .map_err(|_| anyhow::anyhow!("DATABASE_URL environment variable is required"))?;
         
         let port = env::var("PORT")
-            .unwrap_or_else(|_| "3000".to_string())
+            .unwrap_or_else(|_| "3100".to_string())
             .parse::<u16>()
             .map_err(|_| anyhow::anyhow!("PORT must be a valid number"))?;
         
