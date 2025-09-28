@@ -21,6 +21,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lynx.rule=Host(`go.home`) || Host(`goadmin.home`)"
+      - "traefik.http.services.lynx.loadbalancer.server.port=${PORT:-3100}"
 
 networks:
   lynx-network:
