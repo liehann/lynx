@@ -35,8 +35,8 @@
             <form method="post" class="form-section">
                 <div class="form-group">
                     <label for="host" class="form-label">Host Domain</label>
-                    <input type="text" id="host" name="host" class="form-input monospace" placeholder="go" required>
-                    <div class="form-help">The domain that will handle the redirect (e.g., "go" for go.company.com)</div>
+                    <input type="text" id="host" name="host" class="form-input monospace" value="{{ default_redirect_host }}" required>
+                    <div class="form-help">The domain that will handle the redirect (e.g., "{{ default_redirect_host }}" for {{ default_redirect_host }}.company.com)</div>
                 </div>
                 
                 <div class="form-group">
@@ -68,11 +68,11 @@
                 <div class="example-list">
                     <div class="example-item">
                         <div class="example-type">Static Redirect</div>
-                        <div class="example-code">Host: "go" → Source: "/docs" → Target: "https://company.com/documentation"</div>
+                        <div class="example-code">Host: "{{ default_redirect_host }}" → Source: "/docs" → Target: "https://company.com/documentation"</div>
                     </div>
                     <div class="example-item">
                         <div class="example-type">Dynamic Parameter</div>
-                        <div class="example-code">Host: "go" → Source: "/user/{id}" → Target: "https://app.com/profile?user={id}"</div>
+                        <div class="example-code">Host: "{{ default_redirect_host }}" → Source: "/user/{id}" → Target: "https://app.com/profile?user={id}"</div>
                     </div>
                     <div class="example-item">
                         <div class="example-type">Progressive Matching</div>

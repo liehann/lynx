@@ -12,6 +12,7 @@ pub struct HomeTemplate {
 pub struct AddTemplate<'a> {
     pub source: &'a str,
     pub error: Option<&'a str>,
+    pub default_redirect_host: &'a str,
 }
 
 #[derive(Template)]

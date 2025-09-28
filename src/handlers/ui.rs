@@ -46,12 +46,13 @@ pub async fn home(State(state): State<AppState>) -> Result<Response, (StatusCode
 
 pub async fn add_page(
     Query(params): Query<AddPageQuery>,
-    State(_state): State<AppState>,
+    State(state): State<AppState>,
 ) -> Response {
     let source = params.source.as_deref().unwrap_or("");
     let template = AddTemplate { 
         source, 
-        error: None 
+        error: None,
+        default_redirect_host: &state.config.default_redirect_host,
     };
     template.into_response()
 }
@@ -72,6 +73,7 @@ pub async fn add_link(
             let template = AddTemplate {
                 source: &form_data.source,
                 error: Some("A link with this host and source already exists"),
+                default_redirect_host: &state.config.default_redirect_host,
             };
             return template.into_response();
         }
@@ -79,6 +81,7 @@ pub async fn add_link(
             let template = AddTemplate {
                 source: &form_data.source,
                 error: Some("Failed to check for conflicts"),
+                default_redirect_host: &state.config.default_redirect_host,
             };
             return template.into_response();
         }
@@ -103,6 +106,7 @@ pub async fn add_link(
             let template = AddTemplate {
                 source: &form_data.source,
                 error: Some(error_msg),
+                default_redirect_host: &state.config.default_redirect_host,
             };
             template.into_response()
         }
