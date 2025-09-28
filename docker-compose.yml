@@ -23,7 +23,18 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.lynx.rule=Host(`go.home`) || Host(`goadmin.home`)"
+      - "traefik.http.routers.go.rule=Host(`go`) || Host(`go.home`)"
+      - "traefik.http.routers.go.service=lynx"
+
+      - "traefik.http.routers.goadmin.rule=Host(`goadmin`) || Host(`goadmin.home`)"
+      - "traefik.http.routers.goadmin.service=lynx"
+
+      - "traefik.http.routers.docs.rule=Host(`docs`) || Host(`docs.home`)"
+      - "traefik.http.routers.docs.service=lynx"
+
+      - "traefik.http.routers.sheets.rule=Host(`sheets`) || Host(`sheets.home`)"
+      - "traefik.http.routers.sheets.service=lynx"
+
       - "traefik.http.services.lynx.loadbalancer.server.port=3100"
 
 networks:
