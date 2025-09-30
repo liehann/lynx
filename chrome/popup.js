@@ -61,11 +61,17 @@ function createGoLinkElement(link) {
   const div = document.createElement('div');
   div.className = 'go-link-item';
   
-  const goLinkText = `go/${link.source}`;
+  const goLinkText = `go${link.source}`;
   
   div.innerHTML = `
     <span class="go-link-text">${escapeHtml(goLinkText)}</span>
-    <button class="copy-btn" data-link="${escapeHtml(goLinkText)}">Copy</button>
+    <button class="copy-btn" data-link="${escapeHtml(goLinkText)}">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      Copy
+    </button>
   `;
   
   // Add click handler for copy button
@@ -119,7 +125,13 @@ async function handleAddGoLink() {
   
   try {
     addBtn.disabled = true;
-    addBtn.textContent = '...';
+    addBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M12 6v6l4 2"></path>
+      </svg>
+      Adding...
+    `;
     clearMessages();
     
     const response = await new Promise((resolve) => {
@@ -148,7 +160,13 @@ async function handleAddGoLink() {
     showError('Failed to create go link');
   } finally {
     addBtn.disabled = false;
-    addBtn.textContent = '+';
+    addBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Add
+    `;
   }
 }
 
