@@ -1,5 +1,5 @@
 // Background script for Lynx Chrome extension
-const LYNX_API_BASE = 'http://lynx:3000/api'; // Default Lynx server URL
+const LYNX_API_BASE = 'http://go/api'; // Default Lynx server URL
 
 // Store current tab's go links
 let currentTabGoLinks = [];
