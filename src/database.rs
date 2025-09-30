@@ -159,6 +159,26 @@ impl Database {
         Ok(links)
     }
 
+    pub async fn get_link_by_host_and_source(&self, host: &str, source: &str) -> Result<Option<Link>> {
+        let row = sqlx::query("SELECT id, host, source, target, created_at FROM links WHERE host = $1 AND source = $2")
+            .bind(host)
+            .bind(source)
+            .fetch_optional(&self.pool)
+            .await?;
+        
+        if let Some(row) = row {
+            Ok(Some(Link {
+                id: row.get("id"),
+                host: row.get("host"),
+                source: row.get("source"),
+                target: row.get("target"),
+                created_at: row.get("created_at"),
+            }))
+        } else {
+            Ok(None)
+        }
+    }
+
     pub async fn check_source_conflict(&self, host: &str, source: &str, exclude_id: Option<i32>) -> Result<bool> {
         let count: i64 = if let Some(id) = exclude_id {
             let row = sqlx::query("SELECT COUNT(*) as count FROM links WHERE host = $1 AND source = $2 AND id != $3")

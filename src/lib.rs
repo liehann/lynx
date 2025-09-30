@@ -8,7 +8,7 @@ pub mod templates;
 use axum::{
     extract::Host,
     http::Uri,
-    response::Response,
+    response::{IntoResponse, Response},
     routing::{get, post, put, delete},
     Router,
 };
@@ -71,6 +71,23 @@ async fn main_handler(
         // Admin routes are handled by the router above
         // This fallback should only catch unmatched admin routes
         handlers::not_found().await
+    } else if host == state.config.default_redirect_host {
+        // Handle admin routes on default hostname (e.g., go/admin)
+        if path == "/admin" {
+            return handlers::ui::admin_home(axum::extract::State(state)).await
+                .unwrap_or_else(|(status, msg)| (status, msg).into_response());
+        } else if path.starts_with("/admin/") {
+            let name = &path[7..]; // Remove "/admin/" prefix
+            if !name.is_empty() {
+                return handlers::ui::admin_edit_by_name(
+                    axum::extract::Path(name.to_string()),
+                    axum::extract::State(state)
+                ).await.unwrap_or_else(|(status, msg)| (status, msg).into_response());
+            }
+        }
+        
+        // Regular redirector for all other paths on default hostname
+        redirector::handle_redirect(host, path.to_string(), state).await
     } else {
         // Redirector for all other hosts
         redirector::handle_redirect(host, path.to_string(), state).await

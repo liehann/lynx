@@ -256,3 +256,46 @@ pub async fn delete_link(
         Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Failed to delete link").into_response(),
     }
 }
+
+// Admin handlers for default hostname (e.g., go/admin)
+pub async fn admin_home(State(state): State<AppState>) -> Result<Response, (StatusCode, String)> {
+    match state.db.get_recent_links(20).await {
+        Ok(links) => {
+            let responses: Vec<LinkResponse> = links.into_iter().map(LinkResponse::from).collect();
+            let template = HomeTemplate { links: responses };
+            Ok(template.into_response())
+        }
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to load links: {}", e),
+        )),
+    }
+}
+
+pub async fn admin_edit_by_name(
+    Path(name): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Response, (StatusCode, String)> {
+    // Try to find the link by host and source name
+    let source = if name.starts_with('/') {
+        name
+    } else {
+        format!("/{}", name)
+    };
+    
+    match state.db.get_link_by_host_and_source(&state.config.default_redirect_host, &source).await {
+        Ok(Some(link)) => {
+            let response = LinkResponse::from(link);
+            let template = EditTemplate { 
+                link: &response, 
+                error: None 
+            };
+            Ok(template.into_response())
+        }
+        Ok(None) => Err((StatusCode::NOT_FOUND, "Link not found".to_string())),
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to load link: {}", e),
+        )),
+    }
+}
