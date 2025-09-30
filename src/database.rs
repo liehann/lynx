@@ -199,4 +199,24 @@ impl Database {
         
         Ok(count > 0)
     }
+
+    pub async fn get_links_by_target(&self, target: &str) -> Result<Vec<Link>> {
+        let rows = sqlx::query("SELECT id, host, source, target, created_at FROM links WHERE target = $1 ORDER BY created_at DESC")
+            .bind(target)
+            .fetch_all(&self.pool)
+            .await?;
+        
+        let mut links = Vec::new();
+        for row in rows {
+            links.push(Link {
+                id: row.get("id"),
+                host: row.get("host"),
+                source: row.get("source"),
+                target: row.get("target"),
+                created_at: row.get("created_at"),
+            });
+        }
+        
+        Ok(links)
+    }
 }

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 350px;
+      min-height: 200px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      background: #ffffff;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e1e5e9;
+    }
+
+    .logo {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+
+    .title {
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+    }
+
+    .current-url {
+      font-size: 12px;
+      color: #6b7280;
+      margin: 8px 0 16px 0;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+
+    .go-links-section {
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-weight: 600;
+      color: #374151;
+      margin: 0 0 8px 0;
+      font-size: 13px;
+    }
+
+    .go-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      margin: 4px 0;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .go-link-item:hover {
+      background: #f1f5f9;
+    }
+
+    .go-link-text {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      color: #1e40af;
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #2563eb;
+    }
+
+    .copy-btn:active {
+      background: #1d4ed8;
+    }
+
+    .add-link-section {
+      border-top: 1px solid #e1e5e9;
+      padding-top: 16px;
+    }
+
+    .add-form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .go-prefix {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .source-input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    }
+
+    .source-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .add-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .add-btn:hover {
+      background: #059669;
+    }
+
+    .add-btn:active {
+      background: #047857;
+    }
+
+    .add-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .no-links {
+      text-align: center;
+      color: #6b7280;
+      font-style: italic;
+      padding: 20px 0;
+    }
+
+    .error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin: 8px 0;
+    }
+
+    .success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin: 8px 0;
+    }
+
+    .loading {
+      text-align: center;
+      color: #6b7280;
+      padding: 20px 0;
+    }
+
+    .settings-link {
+      font-size: 11px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-top: 12px;
+      display: block;
+      text-align: center;
+    }
+
+    .settings-link:hover {
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="icons/lynx-32.png" alt="Lynx" class="logo">
+    <h1 class="title">Lynx Go Links</h1>
+  </div>
+
+  <div class="current-url" id="currentUrl">Loading...</div>
+
+  <div id="loadingState" class="loading">
+    Checking for go links...
+  </div>
+
+  <div id="content" style="display: none;">
+    <div class="go-links-section" id="goLinksSection">
+      <h2 class="section-title">Existing Go Links</h2>
+      <div id="goLinksList"></div>
+    </div>
+
+    <div class="add-link-section">
+      <h2 class="section-title">Add New Go Link</h2>
+      <div id="errorMessage"></div>
+      <div id="successMessage"></div>
+      <div class="add-form">
+        <span class="go-prefix">go/</span>
+        <input 
+          type="text" 
+          id="sourceInput" 
+          class="source-input" 
+          placeholder="shortname"
+          maxlength="100"
+        >
+        <button id="addBtn" class="add-btn">+</button>
+      </div>
+    </div>
+  </div>
+
+  <a href="#" id="settingsLink" class="settings-link">Configure Lynx Server</a>
+
+  <script src="popup.js"></script>
+</body>
+</html>

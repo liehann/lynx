@@ -8,6 +8,7 @@ A lightweight Rust web application for link shortening and redirection, built wi
 - **Parameterized Links**: Support for dynamic parameters in URLs (e.g., `/user/{id}`)
 - **Admin Web UI**: Simple, modern interface for managing links
 - **JSON API**: RESTful API for programmatic link management
+- **Chrome Extension**: Browser extension for easy go link management
 - **In-memory Cache**: Fast lookups with HashMap-based caching
 - **Conflict Detection**: Prevents duplicate host/source combinations
 
@@ -104,6 +105,7 @@ All API endpoints are available under `/api` on the admin host:
 - `PUT /api/links/:id` - Update a link
 - `DELETE /api/links/:id` - Delete a link
 - `GET /api/links/search?q=query` - Search links
+- `GET /api/links/reverse?target=url` - Find links by target URL (reverse lookup)
 
 #### Example API Usage
 
@@ -133,6 +135,25 @@ curl -X POST http://lynx:3000/api/links \
 ### Progressive Matching
 If no exact match is found, the system progressively strips path segments:
 - `/docs/api/v1` → tries `/docs/api` → tries `/docs`
+
+## Chrome Extension
+
+Lynx includes a Chrome extension for easy go link management directly from your browser.
+
+### Features
+- Smart icon that shows color when go links exist, greyscale when none exist
+- Quick popup to view existing go links and add new ones
+- One-click copying of go links to clipboard
+- Automatic detection when navigating to new pages
+- Support for "go" domain only
+
+### Installation
+1. Open Chrome and go to `chrome://extensions/`
+2. Enable "Developer mode"
+3. Click "Load unpacked" and select the `chrome/` directory
+4. Configure your Lynx server URL in the extension settings
+
+See `chrome/README.md` for detailed installation and usage instructions.
 
 ## Development
 

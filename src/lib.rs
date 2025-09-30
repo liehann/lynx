@@ -15,7 +15,7 @@ use axum::{
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tower_http::{trace::TraceLayer, services::ServeDir};
+use tower_http::{trace::TraceLayer, services::ServeDir, cors::CorsLayer};
 
 use config::Config;
 use models::Link;
@@ -36,6 +36,7 @@ pub fn create_app(state: AppState) -> Router {
         .route("/api/links", get(handlers::api::list_links))
         .route("/api/links", post(handlers::api::create_link))
         .route("/api/links/search", get(handlers::api::search_links))
+        .route("/api/links/reverse", get(handlers::api::get_links_by_target))
         .route("/api/links/:id", get(handlers::api::get_link))
         .route("/api/links/:id", put(handlers::api::update_link))
         .route("/api/links/:id", delete(handlers::api::delete_link));
@@ -55,6 +56,12 @@ pub fn create_app(state: AppState) -> Router {
         .merge(ui_routes)
         .nest_service("/static", ServeDir::new("static"))
         .fallback(main_handler)
+        .layer(
+            CorsLayer::new()
+                .allow_origin(tower_http::cors::Any)
+                .allow_methods(tower_http::cors::Any)
+                .allow_headers(tower_http::cors::Any)
+        )
         .layer(TraceLayer::new_for_http())
         .with_state(state)
 }

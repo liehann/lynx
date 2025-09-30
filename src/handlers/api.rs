@@ -223,3 +223,31 @@ pub async fn search_links(
         )),
     }
 }
+
+pub async fn get_links_by_target(
+    Query(params): Query<std::collections::HashMap<String, String>>,
+    State(state): State<AppState>,
+) -> Result<Json<Vec<LinkResponse>>, (StatusCode, Json<ErrorResponse>)> {
+    let target = match params.get("target") {
+        Some(t) => t,
+        None => return Err((
+            StatusCode::BAD_REQUEST,
+            Json(ErrorResponse {
+                error: "Missing 'target' query parameter".to_string(),
+            }),
+        )),
+    };
+
+    match state.db.get_links_by_target(target).await {
+        Ok(links) => {
+            let responses: Vec<LinkResponse> = links.into_iter().map(LinkResponse::from).collect();
+            Ok(Json(responses))
+        }
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to fetch links by target: {}", e),
+            }),
+        )),
+    }
+}
