@@ -19,13 +19,13 @@ pub async fn handle_redirect(host: String, path: String, state: AppState) -> Res
         return create_redirect_response(&target, &path);
     }
     
-    // No match found, redirect to admin add page with source prefilled
-    let admin_url = format!("http://{}:{}/add?source={}", 
-                           state.config.admin_host,
-                           state.config.port,
-                           urlencoding::encode(&path));
-    
-    Redirect::temporary(&admin_url).into_response()
+    // No match found, redirect to the add page with source prefilled. The add
+    // page is served on every host, so stay on the host the user came in on
+    // instead of depending on the admin host name and container port
+    // resolving from the user's machine.
+    let add_url = format!("/add?source={}", urlencoding::encode(&path));
+
+    Redirect::temporary(&add_url).into_response()
 }
 
 fn find_matching_rule(
